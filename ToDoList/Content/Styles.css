@@ -1,0 +1,58 @@
+﻿/***********************************************************/
+/* Override Standard Classes */
+/***********************************************************/
+body {
+  font-family: Verdana, Arial, sans-serif;
+  font-size: 12px;
+  background-color: lightgray;
+}
+
+/* Must add this to center the block */
+.center-block {
+  float: none;
+}
+
+div.form-group {
+  margin-bottom: .3em;
+}
+
+.container {
+  width: 98%;
+}
+
+/***********************************************************/
+/* Custom Classes */
+/***********************************************************/
+.contentArea {
+  margin-top: 5.5em;
+}
+
+.rowSpacing {
+  margin-top: .5em;
+}
+
+.messageArea {
+  margin-top: 1em;
+}
+
+.aboutArea {
+  background-color: white;
+  margin: 3em;
+  padding: 1em;
+  box-shadow: 0.5em 0.5em rgba(0,0,0,0.8);
+  -webkit-box-shadow: 0.5em 0.5em rgba(0,0,0,0.8);
+  -moz-box-shadow: 0.5em 0.5em rgba(0,0,0,0.8);
+  border-radius: 1em;
+  -webkit-border-radius: 0.5em;
+  -moz-border-radius: 0.5em;
+}
+
+.aboutFeatures {
+  list-style: none;
+}
+
+/* For the ValidationSummary control */
+.valSummary
+{
+  margin-left: -2em;
+}

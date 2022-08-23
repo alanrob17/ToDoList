@@ -1,0 +1,251 @@
+﻿DONE * Add Task page
+
+DONE * Edit Task page
+
+DONE * Delete Task page
+
+DONE * Add Project page
+
+DONE * Edit Project page
+
+DONE * Delete Project page
+
+DONE * Order page for Tasks
+
+DONE * Order page for Projects
+
+* Add Ajax dropdown to EditProject.aspx
+
+* Projects list page 
+	with Add new project option
+
+* Build a view page for a single task
+	Showing Task and Notes
+
+DONE * Maintenance menu option
+
+* Build Projects dropdown menu option
+	Using jQuery and Ajax - Add a list of current projects
+	After I do this I will need to build a page to select the project and display it
+
+* Build front page list of active tasks
+	Treeview???
+	Each Project with its Tasks in order (only active tasks)
+	Graphics for different types of projects
+
+* On task page show Overdue target date rows in a red colour
+	use jQuery to do this
+
+Questions
+---------
+
++ How do I add notes to an existing task?
+	Do I use a popup?
+
+Assumptions
+
++ Don't add a StartDate to a Task - use DateTime.Now
+
++ When adding a new Task assume that it is active
+
+
+
+Database Table Structure
+------------------------
+
+CREATE TABLE [dbo].[Project](
+	[ProjectId] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[Description] [text] NULL,
+	[Order] [int] NULL,
+
+CREATE TABLE [dbo].[Task](
+	[TaskId] [int] IDENTITY(1,1) NOT NULL,
+	[ProjectId] [int] NOT NULL,
+	[Name] [nvarchar](100) NOT NULL,
+	[Description] [text] NULL,
+	[StartDate] [datetime] NOT NULL,
+	[TargetDate] [datetime] NULL,
+	[Importance] [nvarchar](50) NOT NULL,
+	[Status] [nvarchar](50) NOT NULL,
+	[Order] [int] NULL,
+
+
+CREATE TABLE [dbo].[Note](
+	[NoteId] [int] IDENTITY(1,1) NOT NULL,
+	[TaskId] [int] NOT NULL,
+	[Description] [nvarchar](max) NULL,
+	[InsertDate] [datetime] NOT NULL,
+	[Status] [nvarchar](50) NOT NULL,
+
+
+
+----------------------------------------------------------------------------------
+
+    function EditTaskData() {
+        $("#editHdnPK").val("-1");
+        // $("#lblTitle").text("Add New Product");
+        $("#editNameTextBox").val("");
+        $("#editDescriptionTextBox").val("");
+        $("#editHdnStartDateTextBox").val(new Date().toLocaleDateString());
+        $("#editTargetDateTextBox").val(new Date().toLocaleDateString());
+        $("#editImportanceDropDownList").val("");
+        $("#editStatusDropDownList").val("");
+        $("#EditSaveButton").val("Edit Task");
+        $("#editHdnAddMode").val("true");
+        $('#editTaskDialog').modal();
+    }
+
+    <div class="row"><!-- Edit task -->
+      <div class="col-xs-12 col-sm-12 col-md-8">
+        <div class="modal fade" id="editTaskDialog" tabindex="-1" role="dialog">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="H1" runat="server">Edit Task</h4>
+              </div>
+              <div class="modal-body">
+                <input type="hidden" id="editHdnPK" runat="server" /> 
+                <input type="hidden" id="editHdnStartDate" runat="server" />
+                <input type="hidden" id="editHdnProjectId" runat="server" /> 
+                <input type="hidden" id="editHdnAddMode" runat="server" value="false" />
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div class="form-group">
+                      <label for="editNameTextBox">Edit Task</label>
+                      <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                          <asp:TextBox ID="editNameTextBox" Width="380px" runat="server"
+                            CssClass="form-control" TextMode="SingleLine"  autofocus="autofocus"
+                            placeholder="Edit Task" title="Edit Task"></asp:TextBox>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="editDescriptionTextBox">Description</label>
+                      <div class="row">
+                        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                          <asp:TextBox ID="editDescriptionTextBox" runat="server" TextMode="MultiLine" Height="160px" Width="380px" CssClass="form-control"
+                            required="required" placeholder="Description" title="Description"></asp:TextBox>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="editTargetDateTextBox">Target Date</label>
+                      <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                          <asp:TextBox ID="editTargetDateTextBox" runat="server"
+                            CssClass="form-control" TextMode="Date"
+                            placeholder="Target Date" title="Target Date"></asp:TextBox>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="editImportanceDropDownList"><strong>Priority:</strong></label>
+						<div class="row">
+							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+								<asp:DropDownList ID="editImportanceDropDownList" runat="server"
+									CssClass="form-control"
+									title="Priority">
+								</asp:DropDownList>
+							</div>
+						</div>
+                    </div>
+                    <div class="form-group">
+                      <label for="editStatusDropDownList"><strong>Status:</strong></label>
+						<div class="row">
+							<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+								<asp:DropDownList ID="editStatusDropDownList" runat="server"
+									CssClass="form-control"
+									title="Status">
+								</asp:DropDownList>
+							</div>
+						</div>
+                    </div>
+                  </div>
+                </div>
+                <div id="editDivMessageArea" runat="server" visible="false">
+                  <div class="clearfix"></div>
+                  <div class="row messageArea">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                      <div class="well">
+                        <asp:Label ID="editMessageLabel" runat="server"
+                          CssClass="text-warning"
+                          Text="This is some text to show what a message would look like."></asp:Label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <asp:Button ID="EditCancelButton" runat="server" 
+                  Text="Cancel" 
+                  CssClass="btn btn-default"
+                  title="Cancel" 
+                  data-dismiss="modal" />
+                <asp:Button ID="EditSaveButton" runat="server" 
+                  Text="Save Task" 
+                  CssClass="btn btn-primary"
+                  title="Save Task" 
+                  OnClick="EditSaveButton_Click" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <!-- Edit task -->
+
+
+        /// <summary>
+        /// Populate the edit task form.
+        /// </summary>
+        /// <param name="task">The task.</param>
+        private void PopulateEditTaskForm(ToDoDAL.Task task)
+        {
+            editNameTextBox.Text = task.Name;
+            editDescriptionTextBox.Text = task.Description;
+            editTargetDateTextBox.Text = task.TargetDate.ToString("yyyy-MM-dd");
+            editImportanceDropDownList.Text = task.Importance;
+            editStatusDropDownList.Text = task.Status;
+        }
+
+
+        protected void EditSaveButton_Click(object sender, EventArgs e)
+        {
+            if (!Page.IsValid)
+            {
+                editDivMessageArea.Visible = true;
+                editMessageLabel.Text = "<font color=\"Red\">ERROR: please validate each field!</font>";
+
+            }
+            else
+            {
+                var taskId = 0;
+                int.TryParse(editHdnPK.Value, out taskId);
+                var projectId = 0;
+                int.TryParse(editHdnProjectId.Value, out projectId);
+
+                var entity = new ToDoDAL.Task()
+                {
+                    TaskId = taskId,
+                    ProjectId = projectId,
+                    Name = editNameTextBox.Text,
+                    Description = editDescriptionTextBox.Text,
+                    StartDate = DataConvert.HtmlDateToDotNet(DateTime.Now.ToLongDateString()),
+                    TargetDate = DataConvert.HtmlDateToDotNet(editTargetDateTextBox.Text),
+                    Importance = editImportanceDropDownList.SelectedValue,
+                    Status = editStatusDropDownList.SelectedValue
+                };
+
+                var taskData = new TaskData();
+                taskId = taskData.Update(entity);
+
+                if (taskId > 0)
+                {
+                    editDivMessageArea.Visible = true;
+                    editMessageLabel.Text = "TaskId: " + taskId;
+                    PopulateEditTaskForm(entity);
+                }
+            }
+        }
