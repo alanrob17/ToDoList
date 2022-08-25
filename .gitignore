@@ -189,5 +189,5 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 # Stop sharing my configs
-web.config
-app.config
+# web.config
+# app.config
